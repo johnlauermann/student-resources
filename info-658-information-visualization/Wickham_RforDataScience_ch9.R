@@ -1,4 +1,4 @@
-#This script accompanies Hadely et al's R for Data Science, Chapter 1 https://r4ds.hadley.nz/data-visualize.html
+#This script accompanies Wickham et al's R for Data Science, Chapter 1 https://r4ds.hadley.nz/data-visualize.html
 #This is an introduction to data visualization in R. It covers some basics of R's "grammar of graphics" and static data viz in ggplot2.
 
 #set up packages 
