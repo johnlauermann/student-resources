@@ -1,6 +1,6 @@
 #This tutorial accompanies Chang (2025) R Graphics Cookbook https://r-graphics.org/
 
-#Chapter 2: Data viz using base R functions
+#Chapter 3: Bar charts
 ##to install a package
 install.packages("ggplot2", "gcookbook")
 
