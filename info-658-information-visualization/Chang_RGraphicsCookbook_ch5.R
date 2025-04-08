@@ -5,8 +5,6 @@
 library(ggplot2)
 library(gcookbook)  ##this includes sample datasets used below
 library(dplyr)  ##used for managing/reshaping data
-library(MASS)  ##more sample data
-library(ggrepel)  ##for offsetting items in ggplots
 
 
 #5.1) Basic scatter plot
@@ -60,6 +58,8 @@ ggplot(data, aes(x = ageYear, y = heightIn, size = weightLb)) +
 
 
 #5.6) Adding trend lines based on simple regression
+library(MASS)  ##more sample data
+
 ##create a plot object for future use
 plot <- ggplot(heightweight, aes(x = ageYear, y = heightIn))
 
@@ -120,6 +120,8 @@ ggplot(data, aes(x = V1, y = classn)) +
 
 
 #5.11) Adding labels
+library(ggrepel)  ##for offsetting items in ggplots
+
 countries
 data <- countries %>% 
   filter(Year == 2009 & healthexp > 2000) ##filter() pulls the rows that meet the query
