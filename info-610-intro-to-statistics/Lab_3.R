@@ -1,5 +1,4 @@
-# Lab 3: Distributions & histograms
-
+# Lab 3: Histograms & distributions
 
 # we'll use these packages
 ## Note the addition of here (https://here.r-lib.org/), used for creating relative file paths. 
