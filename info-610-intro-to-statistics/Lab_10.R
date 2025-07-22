@@ -1,4 +1,4 @@
-# Lab 10: cluster analysis
+# Lab 10: k-means cluster analysis
 
 ## see also this tutorial: https://uc-r.github.io/kmeans_clustering
 
