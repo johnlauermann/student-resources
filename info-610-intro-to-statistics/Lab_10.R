@@ -11,7 +11,7 @@ library(factoextra)
 
 # load data
 ## sign up for a Census API key at https://api.census.gov/data/key_signup.html
-census_api_key("fd874e212346a3d3f3e27fce3fb3cc7dfce3c4e1")
+census_api_key("your key here")
 
 ## define a vector with variables
 variables <- c(

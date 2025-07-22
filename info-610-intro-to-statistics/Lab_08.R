@@ -19,7 +19,7 @@ library(RSocrata)
 ## now you need a Socrata API token
 ## To get one: https://support.socrata.com/hc/en-us/articles/210138558-Generating-App-Tokens-and-API-Keys 
 ## To query NYC Open Data: https://hwangnyc.medium.com/using-r-to-access-311-service-request-from-nyc-open-data-using-socrata-open-data-api-and-the-83de00327a8c 
-token <- "1mf8Tqeepes8O9FVGXeWmrsDs"
+token <- "your token here"
 
 ## I'm going to pull data for a single species
 data <- read.socrata("https://data.cityofnewyork.us/resource/uvpi-gqnh.json?spc_common=sweetgum", app_token = token)
