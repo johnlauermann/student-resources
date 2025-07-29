@@ -117,7 +117,7 @@ forward_model <- stepAIC(base_model, direction = "forward", scope = log_model)
 summary(forward_model)
 
 backward_model <- stepAIC(base_model, direction = "backward", scope = log_model)
-summary(forward_model)
+summary(backward_model)
 
 both_model <- stepAIC(base_model, direction = "both", scope = log_model)
-summary(forward_model)
+summary(both_model)
