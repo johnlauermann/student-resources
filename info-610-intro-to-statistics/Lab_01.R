@@ -67,7 +67,7 @@ barplot(health_summary$mean_dbh, names.arg = health_summary$health)
 
 
 # Part 3: Summarize your chosen borough
-## You're on your own for this, but here's one cool trick you could include: making a simple map. 
+## You're on your own for this, but here's one idea: making a simple map. 
 
 ## load necessary libraries (install them first if needed)
 library(sf)
