@@ -1,12 +1,10 @@
 # Lab 3: Histograms & distributions
 
 # we'll use these packages
-## Note the addition of here (https://here.r-lib.org/), used for creating relative file paths. 
-## It's a great resource for project-oriented workflows and reproducibility. 
-library(dplyr)
-library(ggplot2)
-library(here)
-library(moments)
+library(dplyr)  ## for data management 
+library(ggplot2)  ## for data visualization 
+library(here)  ## for creating relative file paths. It's a great resource for project-oriented workflows and reproducibility. 
+library(moments)  ## for calculating skewness and kurtosis metrics
 
 # set up your working directory
 ## to use here, save your R script wherever you want, then open it. The following will map to whatever directory in which your script is saved. 
@@ -20,9 +18,9 @@ trips <- read.csv("tripv2pub.csv")
 
 
 # Part 1: Present tables that summarize trip time or distance
-trips$MinuteCategory <- ifelse(trips$TRVLCMIN >= 15, 1, 0) #I created a new variable that classifies trips as more or less than 15 minutes
-table(trips$TDWKND, trips$MinuteCategory) #crosstabulated frequency table
-prop.table(table(trips$TDWKND, trips$TRVLCMIN)) #crosstabulated density table
+trips$MinuteCategory <- ifelse(trips$TRVLCMIN >= 15, 1, 0) ## I created a new variable that classifies trips as more or less than 15 minutes
+table(trips$TDWKND, trips$MinuteCategory) ## crosstabulated frequency table
+prop.table(table(trips$TDWKND, trips$TRVLCMIN)) ## crosstabulated density table
 
 
 # Part 2: Design histograms that descriptive trip time or distance by a category (I used the weekend/workweek variable)
@@ -32,7 +30,7 @@ par(mfrow = c(1,2))
 
 ## then create the histograms 
 hist(trips$TRVLCMIN[trips$TDWKND == 2], 
-     breaks = 250,  ## this parameter sets the bin sizes. More breaks = smaller bins. 
+     breaks = 250,  ## this parameter sets the bin sizes. More breaks = more bins, each covering a smaller range of the y axis. 
      xlim = range(0,120),
      main = "Work Week", xlab = "Minutes", ylab = "Trips",
      col = "yellow")
@@ -49,6 +47,7 @@ mean(trips$TRVLCMIN[trips$TDWKND == 1])
 median(trips$TRVLCMIN[trips$TDWKND == 1])
 sd(trips$TRVLCMIN[trips$TDWKND == 1])
 var(trips$TRVLCMIN[trips$TDWKND == 1])  
+
 mean(trips$TRVLCMIN[trips$TDWKND == 2])
 median(trips$TRVLCMIN[trips$TDWKND == 2])
 sd(trips$TRVLCMIN[trips$TDWKND == 2])
@@ -67,7 +66,7 @@ summary <- trips %>%
       TDWKND == 2 ~ "Work Week"))
 print(summary)
 
-## add these lines to the histograms
+## add mean lines to the histograms
 ## then create the histograms 
 hist(trips$TRVLCMIN[trips$TDWKND == 2], 
      breaks = 250,
@@ -85,9 +84,12 @@ abline(v = mean(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE), col = "orange"
 
 
 # Part 4: Calculate the skewness and kurtosis of the distributions
+## This calculates Pearson's Coefficient of Skewness. It ranges from -3 to +3, with directionality indicating left/right skew and magnititude quantify the degree of the skew. 
 skewness(trips$TRVLCMIN)
 skewness(trips$TRVLCMIN[trips$TDWKND == 1])
 skewness(trips$TRVLCMIN[trips$TDWKND == 2])
+
+## This calculates Pearson's measure of kurtosis. It ranges around the value of 3, with 3 indicating a normal distribution, <3 indicating spikier distributions (less data in the tails), and >3 indicating flatter distributions (more data in the tails). 
 kurtosis(trips$TRVLCMIN)
 kurtosis(trips$TRVLCMIN[trips$TDWKND == 1])
 kurtosis(trips$TRVLCMIN[trips$TDWKND == 2])
