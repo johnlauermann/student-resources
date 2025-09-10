@@ -3,7 +3,6 @@
 
 
 # Set your working directory
-setwd("C:/Users/johnl/Downloads")
 setwd("C:/Users/YourName/Documents/ClassData")  #example for a PC
 setwd("~/Documents/ClassData")  #example for a Mac
 
@@ -35,8 +34,13 @@ colSums(is.na(data))  ## for the entire data frame
 
 
 # Part 2: Summarize data for a single species
+### for this, we'll import the dplyr library, which has more specialized data management tools
+install.packages("dplyr") ## if you need to install it...
+library(dplyr)
+
 ## query the data from the web, download as a csv, then:
-linden <- read.csv("linden.csv")  ## I'll use American Linden trees as an example
+linden <- data %<% 
+  filter(spc_common = "Linden")  ## I'll use American Linden trees as an example
 
 ## create frequency and proportional tables
 frequency <- table(data$borough)
@@ -46,10 +50,6 @@ proportion <- prop.table(frequency)
 print(proportion)
 
 ## create a pivot table
-### for this, we'll import the dplyr library, which has more specialized data management tools
-install.packages("dplyr") ## if you need to install it...
-library(dplyr)
-
 pivot <- linden %>%  ## The %>% is the 'pipe' operator. It means do this, then keep going.
   group_by(nta_name) %>%  ## group_by() to group by neighborhood
   summarize(count = n())  ## summarize() can be any descriptive statistic on the group. I want the total count. 
@@ -67,7 +67,7 @@ barplot(health_summary$mean_dbh, names.arg = health_summary$health)
 
 
 # Part 3: Summarize your chosen borough
-## You're on your own for this, but here's one cool trick you could include: making a simple map. 
+## You're on your own for this, but here's one idea: making a simple map. 
 
 ## load necessary libraries (install them first if needed)
 library(sf)
