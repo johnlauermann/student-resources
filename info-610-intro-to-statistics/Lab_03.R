@@ -2,7 +2,6 @@
 
 # we'll use these packages
 library(dplyr)  ## for data management 
-library(ggplot2)  ## for data visualization 
 library(here)  ## for creating relative file paths. It's a great resource for project-oriented workflows and reproducibility. 
 library(moments)  ## for calculating skewness and kurtosis metrics
 
