@@ -14,7 +14,8 @@ here::i_am("Lab_03.r")
 # add your data
 ## Get data from the most recent year of the National Household Travel Survey (https://nhts.ornl.gov/).
 ## I'm going to use the trips data, a record of individual trips taken by respondents. 
-trips <- read.csv("tripv2pub.csv")
+trips <- read.csv("tripv2pub.csv") %>%
+  mutate(across(everything(), ~ ifelse(.x < 0, NA, .x)))  # this replaces negative values with nulls, since that's how the survey designates non-reponses. 
 
 
 # Part 1: Present tables that summarize trip time or distance
@@ -43,15 +44,15 @@ hist(trips$TRVLCMIN[trips$TDWKND == 1],
 
 # Part 3: Interpret distributions using mean, median, standard deviation, and variance
 ## basic descriptives
-mean(trips$TRVLCMIN[trips$TDWKND == 1])
-median(trips$TRVLCMIN[trips$TDWKND == 1])
-sd(trips$TRVLCMIN[trips$TDWKND == 1])
-var(trips$TRVLCMIN[trips$TDWKND == 1])  
+mean(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+median(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+sd(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+var(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)  
 
-mean(trips$TRVLCMIN[trips$TDWKND == 2])
-median(trips$TRVLCMIN[trips$TDWKND == 2])
-sd(trips$TRVLCMIN[trips$TDWKND == 2])
-var(trips$TRVLCMIN[trips$TDWKND == 2])
+mean(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+median(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+sd(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+var(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
 
 # or use dplyr to simplify this
 summary <- trips %>%
