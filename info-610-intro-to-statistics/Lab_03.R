@@ -2,7 +2,6 @@
 
 # we'll use these packages
 library(dplyr)  ## for data management 
-library(ggplot2)  ## for data visualization 
 library(here)  ## for creating relative file paths. It's a great resource for project-oriented workflows and reproducibility. 
 library(moments)  ## for calculating skewness and kurtosis metrics
 
@@ -14,7 +13,9 @@ here::i_am("Lab_03.r")
 # add your data
 ## Get data from the most recent year of the National Household Travel Survey (https://nhts.ornl.gov/).
 ## I'm going to use the trips data, a record of individual trips taken by respondents. 
-trips <- read.csv("tripv2pub.csv")
+trips <- read.csv("tripv2pub.csv") %>%
+  mutate(across(everything(), ~ ifelse(.x < 0, NA, .x)))  # this replaces negative values with nulls, since that's how the survey designates non-reponses. 
+
 
 
 # Part 1: Present tables that summarize trip time or distance
@@ -43,23 +44,23 @@ hist(trips$TRVLCMIN[trips$TDWKND == 1],
 
 # Part 3: Interpret distributions using mean, median, standard deviation, and variance
 ## basic descriptives
-mean(trips$TRVLCMIN[trips$TDWKND == 1])
-median(trips$TRVLCMIN[trips$TDWKND == 1])
-sd(trips$TRVLCMIN[trips$TDWKND == 1])
-var(trips$TRVLCMIN[trips$TDWKND == 1])  
+mean(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+median(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+sd(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+var(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)  
 
-mean(trips$TRVLCMIN[trips$TDWKND == 2])
-median(trips$TRVLCMIN[trips$TDWKND == 2])
-sd(trips$TRVLCMIN[trips$TDWKND == 2])
-var(trips$TRVLCMIN[trips$TDWKND == 2])
+mean(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+median(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+sd(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+var(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
 
 # or use dplyr to simplify this
 summary <- trips %>%
   group_by(TDWKND) %>%
-  summarize(mean = mean(TRVLCMIN),
-            median = median(TRVLCMIN),
-            sd = sd(TRVLCMIN),
-            var = var(TRVLCMIN)) %>%
+  summarize(mean = mean(TRVLCMIN, na.rm = TRUE),
+            median = median(TRVLCMIN, na.rm = TRUE),
+            sd = sd(TRVLCMIN, na.rm = TRUE),
+            var = var(TRVLCMIN, na.rm = TRUE)) %>%
   mutate(
     TDWKND = case_when(
       TDWKND == 1 ~ "Weekend",
@@ -85,11 +86,12 @@ abline(v = mean(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE), col = "orange"
 
 # Part 4: Calculate the skewness and kurtosis of the distributions
 ## This calculates Pearson's Coefficient of Skewness. It ranges from -3 to +3, with directionality indicating left/right skew and magnititude quantify the degree of the skew. 
-skewness(trips$TRVLCMIN)
-skewness(trips$TRVLCMIN[trips$TDWKND == 1])
-skewness(trips$TRVLCMIN[trips$TDWKND == 2])
+skewness(trips$TRVLCMIN, na.rm = TRUE)
+skewness(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+skewness(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
 
 ## This calculates Pearson's measure of kurtosis. It ranges around the value of 3, with 3 indicating a normal distribution, <3 indicating spikier distributions (less data in the tails), and >3 indicating flatter distributions (more data in the tails). 
-kurtosis(trips$TRVLCMIN)
-kurtosis(trips$TRVLCMIN[trips$TDWKND == 1])
-kurtosis(trips$TRVLCMIN[trips$TDWKND == 2])
+kurtosis(trips$TRVLCMIN, na.rm = TRUE)
+kurtosis(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
+kurtosis(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+
