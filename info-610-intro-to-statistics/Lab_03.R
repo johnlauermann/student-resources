@@ -15,10 +15,6 @@ here::i_am("Lab_03.r")
 ## I'm going to use the trips data, a record of individual trips taken by respondents. 
 trips <- read.csv("tripv2pub.csv") %>%
   mutate(across(everything(), ~ ifelse(.x < 0, NA, .x)))  # this replaces negative values with nulls, since that's how the survey designates non-reponses. 
-<<<<<<< HEAD
-
-=======
->>>>>>> fc0bdabd915f591743de06e0e06c123c063982f5
 
 
 # Part 1: Present tables that summarize trip time or distance
