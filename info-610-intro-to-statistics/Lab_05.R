@@ -2,6 +2,7 @@
 
 # set up, with census API
 ## I'll use the same poverty and race variables that I used in Lab 4 (S1701 and B02001, respectively)
+library(dply)
 library(tidyverse)
 library(tidycensus)
 
@@ -33,7 +34,7 @@ data <- get_acs(geography = "county",
                 year = 2022)
 
 ## calculate percentages
-## you could do it this way, or use within() or the dplyr mutate() functions
+### you could do it this way, variable by variable
 data$AIANpct <- (data$AIAN / data$Pop) * 100
 data$Asianpct <- (data$Asian / data$Pop) * 100
 data$Blackpct <- (data$Black / data$Pop) * 100
@@ -42,6 +43,28 @@ data$Otherpct <- (data$Other / data$Pop) * 100
 data$TwoOrMorepct <- (data$TwoOrMore / data$Pop) * 100
 data$Whitepct <- (data$White / data$Pop) * 100
 
+### or use within() from base R
+data <- within(data, {
+  AIANpct = AIAN/Pop * 100
+  Asianpct = Asian/Pop * 100
+  Blackpct = Black/Pop * 100
+  NHPIpct = NHPI/Pop * 100
+  Otherpct = Other/Pop * 100
+  TwoOrMorepct = TwoOrMore/Pop * 100
+  Whitepct = White/Pop * 100
+})
+
+### or use dplyr's mutate() functions
+data <- data %>%
+  mutate(
+    AIANpct = AIAN/Pop * 100,
+    Asianpct = Asian/Pop * 100,
+    Blackpct = Black/Pop * 100,
+    NHPIpct = NHPI/Pop * 100,
+    Otherpct = Other/Pop * 100,
+    TwoOrMorepct = TwoOrMore/Pop * 100,
+    Whitepct = White/Pop * 100,
+    )
 
 
 # Q1: plot & define a research question
