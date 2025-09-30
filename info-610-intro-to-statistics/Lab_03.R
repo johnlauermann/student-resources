@@ -3,7 +3,7 @@
 # we'll use these packages
 library(dplyr)  ## for data management 
 library(here)  ## for creating relative file paths. It's a great resource for project-oriented workflows and reproducibility. 
-library(moments)  ## for calculating skewness and kurtosis metrics
+library(kim)  ## for calculating skewness and kurtosis metrics
 
 # set up your working directory
 ## to use here, save your R script wherever you want, then open it. The following will map to whatever directory in which your script is saved. 
@@ -85,12 +85,12 @@ abline(v = mean(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE), col = "orange"
 
 # Part 4: Calculate the skewness and kurtosis of the distributions
 ## This calculates Pearson's Coefficient of Skewness. It ranges from -3 to +3, with directionality indicating left/right skew and magnititude quantify the degree of the skew. 
-skewness(trips$TRVLCMIN, na.rm = TRUE)
-skewness(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
-skewness(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+skewness(trips$TRVLCMIN, type = "pearson_2")
+skewness(trips$TRVLCMIN[trips$TDWKND == 1], type = "pearson_2")
+skewness(trips$TRVLCMIN[trips$TDWKND == 2], type = "pearson_2")
 
-## This calculates Pearson's measure of kurtosis. It ranges around the value of 3, with 3 indicating a normal distribution, <3 indicating spikier distributions (less data in the tails), and >3 indicating flatter distributions (more data in the tails). 
-kurtosis(trips$TRVLCMIN, na.rm = TRUE)
-kurtosis(trips$TRVLCMIN[trips$TDWKND == 1], na.rm = TRUE)
-kurtosis(trips$TRVLCMIN[trips$TDWKND == 2], na.rm = TRUE)
+## This calculates Pearson's measure of kurtosis. Larger numbers indicate flatter distributions.
+kurtosis(trips$TRVLCMIN)
+kurtosis(trips$TRVLCMIN[trips$TDWKND == 1])
+kurtosis(trips$TRVLCMIN[trips$TDWKND == 2])
 
