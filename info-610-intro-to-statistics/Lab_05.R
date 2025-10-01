@@ -31,7 +31,7 @@ variables <- c(
 data <- get_acs(geography = "county",
                 variables = variables,
                 output = "wide",
-                year = 2022)
+                year = 2023)
 
 ## calculate percentages
 ### you could do it this way, variable by variable
