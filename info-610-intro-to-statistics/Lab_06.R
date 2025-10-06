@@ -1,10 +1,10 @@
 # Lab 6: Multiple linear regression
 
-library(corrplot)
-library(dplyr)
-library(olsrr)
-library(tidyverse)
-library(tidycensus)
+library(corrplot)     # for a correlation matrix
+library(dplyr)        # for data management
+library(olsrr)        # for stepwise model building
+library(tidyverse)    # dependency for tidycensus
+library(tidycensus)   # for Census API
 
 # set up with census API
 ## I'll once again use the poverty variable that I used prior assignments, plus a few others
@@ -12,7 +12,7 @@ library(tidycensus)
 ##sign up for a Census API key at https://api.census.gov/data/key_signup.html
 census_api_key("your key here")
 
-## define a vector with variables
+## define a vector with variables of interest
 variables <- c(
   PovertyRate  = "S1701_C03_046E",
   Bachpct = "S1501_C02_012E",
@@ -21,17 +21,17 @@ variables <- c(
   MedConRent = "B25058_001E",
   MedHHIncome = "S0501_C01_101E")
 
-## pull data from API
-data <- get_acs(geography = "county",
-                variables = variables,
-                output = "wide",
-                year = 2023)
+## pull data from the Census API
+data <- get_acs(geography = "county",    # all counties in the US
+                variables = variables,   # all variables defined in the list above
+                output = "wide",         # outputs a table where each row is a county and each column a variable
+                year = 2023)             # or whatever is the most recent year available 
 
 
 ## data cleaning to remove unnecessary variables and omit null values
 ls(data)
-data <- data %>% select(-c(B25058_001M, S0501_C01_101M, S1501_C02_012M,
-                           S1501_C02_013M,S1701_C03_046M, S2301_C04_001M))
+data <- data %>% 
+  select(-c(B25058_001M, S0501_C01_101M, S1501_C02_012M, S1501_C02_013M,S1701_C03_046M, S2301_C04_001M))  # select uses a - to remove columns
 
 
 # Q1: plot & define a research question
@@ -39,8 +39,8 @@ data <- data %>% select(-c(B25058_001M, S0501_C01_101M, S1501_C02_012M,
 
 ## generate scatterplots
 ### create a matrix for analysis
-matrix <- data %>% select(-c(GEOID, NAME))
-matrix <- na.omit(matrixdata)
+matrix <- data %>% select(-c(GEOID, NAME))   # drops the variable we don't want to correlated
+matrix <- na.omit(matrixdata)                # removes rows with null values
 
 ### use pairs() to create the visualization
 pairs(matrix, main = "Potential Predictors of Poverty")
@@ -56,12 +56,12 @@ cor.test(data$PovertyRate, data$MedHHIncome)
 
 # Q2: define a regression model, interpret coefficients
 ## define the basic mode
-model1 <- lm(PovertyRate ~ Bachpct + Postgradpct + UnemploymentRate, data = data)
-summary(model1)
+model_1 <- lm(PovertyRate ~ Bachpct + Postgradpct + UnemploymentRate, data = data)  # define the model
+summary(model_1)  # print results
 
 ## add an interaction effect
-model2 <- lm(PovertyRate ~ Bachpct + Postgradpct + UnemploymentRate + (Bachpct * UnemploymentRate), data = data)
-summary(model2)
+model_2 <- lm(PovertyRate ~ Bachpct + Postgradpct + UnemploymentRate + (Bachpct * UnemploymentRate), data = data)
+summary(model_2)
 
 
 
@@ -69,14 +69,14 @@ summary(model2)
 ## see this for documentation https://cran.r-project.org/web/packages/olsrr/vignettes/variable_selection.html
 
 ## a forward model adds predictor variables one at a time
-ols_step_forward_r2(model2)
+ols_step_forward_r2(model_2)
 
 ## a backward model starts with all variables, then removes them one by one
-ols_step_backward_r2(model2)
+ols_step_backward_r2(model_2)
 
 ## a both model (stepwise) adds and removes in all possible combinations
-ols_step_both_r2(model2)
+ols_step_both_r2(model_2)
 
 ##or this function will run the possibilities for you
-ols_step_all_possible(model2)
+ols_step_all_possible(model_2)
 
