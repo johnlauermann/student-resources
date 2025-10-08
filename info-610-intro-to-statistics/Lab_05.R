@@ -1,10 +1,9 @@
 # Lab 5: Simple linear regression
 
-# set up, with census API
-## I'll use the same poverty and race variables that I used in Lab 4 (S1701 and B02001, respectively)
-library(dply)
-library(tidyverse)
-library(tidycensus)
+# set up libraries
+library(dplyr)      # for data management
+library(tidyverse)  # dependency for tidycensus
+library(tidycensus) # for querying the Census API
 
 
 ## sign up for a Census API key at https://api.census.gov/data/key_signup.html
@@ -12,10 +11,12 @@ census_api_key("your key here")
 
 # pull my variables
 ## find a list of variables here
+## it includes code, description, sampling population, and finest geographic scale of availability
 variablelist <- load_variables(2023, "acs5", cache = TRUE)
 
 
 ## define a vector with variables
+## I'll use the same poverty and race variables that I used in Lab 4 (S1701 and B02001, respectively)
 variables <- c(
   PovertyRate  = "S1701_C03_046E",
   Pop = "B02001_001E",
@@ -28,10 +29,10 @@ variables <- c(
   White = "B02001_002E")
 
 ## query the API
-data <- get_acs(geography = "county",
-                variables = variables,
-                output = "wide",
-                year = 2023)
+data <- get_acs(geography = "county",  # choose a geography. list of options here https://walker-data.com/tidycensus/articles/basic-usage.html 
+                variables = variables, # you can name them, or include a list like thi
+                output = "wide",       # wide: each row is an observation and each column is a variable. long: each row is a variable
+                year = 2023)          
 
 ## calculate percentages
 ### you could do it this way, variable by variable
