@@ -12,6 +12,10 @@ library(tidycensus)   # for Census API
 ##sign up for a Census API key at https://api.census.gov/data/key_signup.html
 census_api_key("your key here")
 
+## find a list of variables here
+## it includes code, description, sampling population, and finest geographic scale of availability
+variablelist <- load_variables(2023, "acs5", cache = TRUE)
+
 ## define a vector with variables of interest
 variables <- c(
   PovertyRate  = "S1701_C03_046E",
