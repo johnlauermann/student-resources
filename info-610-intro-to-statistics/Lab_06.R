@@ -33,9 +33,10 @@ data <- get_acs(geography = "county",    # all counties in the US
 
 
 ## data cleaning to remove unnecessary variables and omit null values
-ls(data)
+ls(data) # lists the variables
 data <- data %>% 
-  select(-c(B25058_001M, S0501_C01_101M, S1501_C02_012M, S1501_C02_013M,S1701_C03_046M, S2301_C04_001M))  # select uses a - to remove columns
+  select(-c(B25058_001M, S0501_C01_101M, S1501_C02_012M, 
+            S1501_C02_013M,S1701_C03_046M, S2301_C04_001M))  # select() uses - to remove columns
 
 
 # Q1: plot & define a research question
@@ -43,7 +44,7 @@ data <- data %>%
 
 ## generate scatterplots
 ### create a matrix for analysis
-matrix <- data %>% select(-c(GEOID, NAME))   # drops the variable we don't want to correlated
+matrix <- data %>% select(-c(GEOID, NAME))   # drops the variable we don't want to correlate
 matrix <- na.omit(matrix)                # removes rows with null values
 
 ### use pairs() to create the visualization
@@ -72,15 +73,16 @@ summary(model_2)
 # Q3 Use forward, backward, or stepwise modeling
 ## see this for documentation https://cran.r-project.org/web/packages/olsrr/vignettes/variable_selection.html
 
-## a forward model adds predictor variables one at a time, evaluating based on how variables change R2
+## a forward selection adds predictor variables one at a time 
+## this version evaluates each iteration based on how the new variables change R2
 ols_step_forward_r2(model_2)
 
-## a backward model starts with all variables, then removes them one by one
+## a backward selection starts with all variables, then removes them one by one
 ols_step_backward_r2(model_2)
 
-## a both model (stepwise) adds and removes in all possible combinations
+## a both selection (stepwise) adds and removes in all possible combinations
 ols_step_both_r2(model_2)
 
-##or this function will run the possibible indicators 
+## or this function will run the possibible indicators, in addition to R2
 ols_step_all_possible(model_2)
 
