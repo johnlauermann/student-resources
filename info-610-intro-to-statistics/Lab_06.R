@@ -72,7 +72,7 @@ summary(model_2)
 # Q3 Use forward, backward, or stepwise modeling
 ## see this for documentation https://cran.r-project.org/web/packages/olsrr/vignettes/variable_selection.html
 
-## a forward model adds predictor variables one at a time
+## a forward model adds predictor variables one at a time, evaluating based on how variables change R2
 ols_step_forward_r2(model_2)
 
 ## a backward model starts with all variables, then removes them one by one
@@ -81,6 +81,6 @@ ols_step_backward_r2(model_2)
 ## a both model (stepwise) adds and removes in all possible combinations
 ols_step_both_r2(model_2)
 
-##or this function will run the possibilities for you
+##or this function will run the possibible indicators 
 ols_step_all_possible(model_2)
 
