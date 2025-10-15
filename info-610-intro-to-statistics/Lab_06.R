@@ -40,7 +40,7 @@ data <- data %>%
 ## generate scatterplots
 ### create a matrix for analysis
 matrix <- data %>% select(-c(GEOID, NAME))   # drops the variable we don't want to correlated
-matrix <- na.omit(matrixdata)                # removes rows with null values
+matrix <- na.omit(matrix)                # removes rows with null values
 
 ### use pairs() to create the visualization
 pairs(matrix, main = "Potential Predictors of Poverty")
