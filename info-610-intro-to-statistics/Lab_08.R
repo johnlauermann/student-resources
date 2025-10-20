@@ -4,69 +4,49 @@ library(dplyr)
 library(ggplot2)
 library(leaflet)
 library(MASS)
-library(RSocrata)
 
 
 # load data
-## for this, we'll use the Socrata API to load data from NYC Open Data using RSocrata 
-## we'll then pull data from the NYC Street Tree Census: https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh/about_data
+## for this, we'll use the most recent URL to load Furman Center's Subsidized Housing Database
+url <- "https://furmancenter.org/files/CoreData/FC_SHD_bbl_analysis_2025-05-13.csv"
+data <- read.csv(url) %>%
+  filter(prog_j51 == 1 | prog_421a == 1)  # in my case, I only want to compare these kinds of properties
 
-## the library we need is deprecated, so we first have to install it from the developer's GitHub profile (https://github.com/Chicago/RSocrata)
-library(devtools)
-install_github("Chicago/RSocrata")
-library(RSocrata)
+## add one new variable
+data$assessed_value_perunit <- data$assessed_value / data$res_units
 
-## now you need a Socrata API token
-## To get one: https://support.socrata.com/hc/en-us/articles/210138558-Generating-App-Tokens-and-API-Keys 
-## To query NYC Open Data: https://hwangnyc.medium.com/using-r-to-access-311-service-request-from-nyc-open-data-using-socrata-open-data-api-and-the-83de00327a8c 
-token <- "your token here"
-
-## I'm going to pull data for a single species
-data <- read.socrata("https://data.cityofnewyork.us/resource/uvpi-gqnh.json?spc_common=sweetgum", app_token = token)
-
-## clean data and calculate outcome variables
-data <- na.omit(data)
-data <- data %>%
-  mutate(
-    goodhealth = if_else(health == "Good", 1, 0),
-    badhealth = if_else(health == "Good", 0, 1),
-    sidewalkdamage = if_else(sidewalk == "Damage", 1, 0),
-    guardhelpful = if_else(guards == "Helpful", 1, 0),
-    stonedamage = if_else(root_stone == "Yes", 1, 0),
-    wiredamage = if_else(trunk_wire == "Yes", 1, 0),
-    tree_dbh = as.numeric(tree_dbh), 
-    borocode = as.numeric(borocode),
-    longitude = as.numeric(longitude),
-    latitude = as.numeric(latitude)
-    )
 
 
 # Q1: Define and justify your research question
-## In my case, what are predictors of bad health among trees in my chosen species? 
+## In my case, what differentiates a 421a vs J51 building? 
 
 ## basic data visualizations
-ggplot(data, aes(x= health)) +
-  geom_bar(stat = "count")
-ggplot(data, aes(x= tree_dbh, fill = health)) +
-  geom_bar()
-ggplot(data, aes(x= boroname, fill = health)) +
-  geom_bar(stat = "count")
-ggplot(data, aes(x= sidewalk, fill = health)) +
-  geom_bar(stat = "count")
-ggplot(data, aes(x= root_stone, fill = health)) +
-  geom_bar(stat = "count")
-ggplot(data, aes(x= trunk_wire, fill = health)) +
-  geom_bar(stat = "count")
-ggplot(data, aes(x= trnk_light, fill = health)) +
-  geom_bar(stat = "count")
+boxplot(year_built ~ prog_421a, 
+        data = data,
+        xlab = "421a Building",
+        ylab = "Year Built")
 
-## testing correlations
-cor.test(data$badhealth, data$tree_dbh, method = "kendall")
-cor.test(data$badhealth, data$sidewalkdamage, method = "kendall")
-cor.test(data$badhealth, data$guardhelpful, method = "kendall")
-cor.test(data$badhealth, data$stonedamage, method = "kendall")
-cor.test(data$badhealth, data$wiredamage, method = "kendall")
-cor.test(data$badhealth, data$borocode, method = "kendall")
+boxplot(res_units ~ prog_421a, 
+        data = data,
+        xlab = "421a Building",
+        ylab = "Residential Units")
+
+boxplot(assessed_value_perunit ~ prog_421a, 
+        data = data,
+        xlab = "421a Building",
+        ylab = "Assessed Value ($ per unit)")
+
+boxplot(net_inc_sqft ~ prog_421a, 
+        data = data,
+        xlab = "421a Building",
+        ylab = "Net Rental Income ($ per sq.ft.)")
+
+
+## testing correlations, using Kendall's tau b/c data is categorical
+cor.test(data$prog_421a, data$year_built, method = "kendall")
+cor.test(data$prog_421a, data$res_units, method = "kendall")
+cor.test(data$prog_421a, data$assessed_value_perunit, method = "kendall")
+cor.test(data$prog_421a, data$net_inc_sqft, method = "kendall")
 
 ## now just for fun, a map...
 options(viewer = NULL)
@@ -74,27 +54,57 @@ map <- leaflet()
 map <- addTiles(map)
 map <- addProviderTiles(map, "Stadia.StamenToner")
 
-cols <- c("green", "gray")
+cols <- c("blue", "gray")
 map <- addCircleMarkers(map,
                       lng = data$longitude,
                       lat = data$latitude,
-                      radius = 2.5,
-                      color = cols[data$badhealth + 1],
+                      radius = 1.5,
+                      color = cols[data$prog_421a + 1],
                       )
 map <- addLegend(map,
                "topright",
                colors = cols,
-               labels = c("Good", "Fair/Poor"),
-               title = "Tree Health",
+               labels = c("421a", "J51"),
+               title = "Construction-Related Subsidies",
                opacity = 1
 )
 map
 
 
+# Q2: define and interpret a logistic model with only one variable at a time
+## define my predictors
+predictors <- c("year_built", "res_units", "net_inc_sqft", "assessed_value_perunit")
 
-# Q2: define and interpret a logistic model
+## write a loop to test each predictor
+for (variable in predictors){
+  ## built the formula
+  formula <- as.formula(paste("prog_421a ~", variable))
+  
+  ## fit the model
+  model <- glm(formula, data = data, family = "binomial")
+  
+  ## print results
+  ### model summary
+  cat("\n\n Model for predictor:", variable, "\n")
+  print(summary(model))
+  
+  ### odds ratios
+  cat("\nCoefficients (in Odds):\n")
+  print(exp(coef(model)))
+  
+  ### confidence intervals
+  cat("\nConfidence Intervals (in Odds):\n")
+  print(exp(confint.default(model)))
+  
+  # analysis of deviance
+  print(anova(model, test = "Chisq"))
+  
+}
+
+# Q3: define and interpret a logistic model with all variables
+
 ## define the model
-log_model <- glm(badhealth ~ tree_dbh + boroname + sidewalk + guards + root_stone + trunk_wire, 
+log_model <- glm(prog_421a ~ year_built + res_units + net_inc_sqft + assessed_value_perunit, 
                  data = data, family = "binomial")
 
 ## print the results
@@ -105,19 +115,6 @@ exp(coefficients(log_model))
 exp(confint.default(log_model))
 
 
+## Interpret analysis of deviance table
+anova(log_model, "Chisquare")
 
-# Q3: verify with stepwise modeling
-## See this for more details: https://rstudiodatalab.medium.com/stepwise-logistic-regression-in-r-a-complete-guide-82fcd9e2d389 
-
-## first we have to set up a base model, against which the full  model will be compared
-base_model <- glm(badhealth ~ 1, data = data, family = "binomial")
-
-## then we can run forward, backward, and/or stepwise selections
-forward_model <- stepAIC(base_model, direction = "forward", scope = log_model)
-summary(forward_model)
-
-backward_model <- stepAIC(base_model, direction = "backward", scope = log_model)
-summary(backward_model)
-
-both_model <- stepAIC(base_model, direction = "both", scope = log_model)
-summary(both_model)
