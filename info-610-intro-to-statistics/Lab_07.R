@@ -4,6 +4,10 @@
 ## Pick a location and download the relevant dataset. 
 ## Import to R, so we can run categorical tests.
 
+## define workspace
+wd <- getwd()
+setwd(wd)
+
 ## here's a method to download data files directly in the script
 url <- "https://stacks.stanford.edu/file/druid:yg821jf8611/yg821jf8611_ri_statewide_2020_04_01.rds"
 download.file(url = url, destfile = "RI_statewide_2020.rds")
