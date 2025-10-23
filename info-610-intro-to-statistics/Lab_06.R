@@ -75,13 +75,19 @@ summary(model_2)
 
 ## a forward selection adds predictor variables one at a time 
 ## this version evaluates each iteration based on how the new variables change R2
-ols_step_forward_r2(model_2)
+forward <- ols_step_forward_r2(model_2) ## generate and save the modeling
+forward  ## print the report
+plot(forward)  ## visualize the change in R2 from one step to the next
 
 ## a backward selection starts with all variables, then removes them one by one
-ols_step_backward_r2(model_2)
+backward <- ols_step_backward_r2(model_2)
+backward
+plot(backward)
 
 ## a both selection (stepwise) adds and removes in all possible combinations
-ols_step_both_r2(model_2)
+both <- ols_step_both_r2(model_2)
+both
+plot(both)
 
 ## or this function will run the possibible indicators, in addition to R2
 ols_step_all_possible(model_2)
