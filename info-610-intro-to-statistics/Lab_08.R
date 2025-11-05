@@ -8,8 +8,7 @@ library(leaflet)
 # load data
 ## for this, we'll use the most recent URL to load Furman Center's Subsidized Housing Database
 url <- "https://furmancenter.org/files/CoreData/FC_SHD_bbl_analysis_2025-05-13.csv"
-data <- read.csv(url) %>%
-  filter(prog_j51 == 1 | prog_421a == 1)  # in my case, I only want to compare these kinds of properties
+data <- read.csv(url) 
 
 ## add one new variable
 data$assessed_value_perunit <- data$assessed_value / data$res_units
@@ -53,17 +52,18 @@ map <- leaflet()
 map <- addTiles(map)
 map <- addProviderTiles(map, "Stadia.StamenToner")
 
-cols <- c("blue", "gray")
+properties421a <- data %>%
+  filter(prog_421a == 1)
+
 map <- addCircleMarkers(map,
-                      lng = data$longitude,
-                      lat = data$latitude,
+                      lng = properties421a$longitude,
+                      lat = properties421a$latitude,
                       radius = 1.5,
-                      color = cols[data$prog_421a + 1],
+                      color = "blue"
                       )
 map <- addLegend(map,
                "topright",
                colors = cols,
-               labels = c("421a", "J51"),
                title = "Construction-Related Subsidies",
                opacity = 1
 )
