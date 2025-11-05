@@ -3,7 +3,6 @@
 library(dplyr)
 library(ggplot2)
 library(leaflet)
-library(MASS)
 
 
 # load data
@@ -71,13 +70,14 @@ map <- addLegend(map,
 map
 
 
-# Q2: define and interpret a logistic model with only one variable at a time
+# Q2: define and interpret logistic models with only one variable at a time
 ## define my predictors
 predictors <- c("year_built", "res_units", "net_inc_sqft", "assessed_value_perunit")
 
 ## write a loop to test each predictor
 for (variable in predictors){
-  ## built the formula
+  
+  ## build the formula
   formula <- as.formula(paste("prog_421a ~", variable))
   
   ## fit the model
@@ -85,15 +85,12 @@ for (variable in predictors){
   
   ## print results
   ### model summary
-  cat("\n\n Model for predictor:", variable, "\n")
   print(summary(model))
   
   ### odds ratios
-  cat("\nCoefficients (in Odds):\n")
   print(exp(coef(model)))
   
   ### confidence intervals
-  cat("\nConfidence Intervals (in Odds):\n")
   print(exp(confint.default(model)))
   
   # analysis of deviance
@@ -101,8 +98,8 @@ for (variable in predictors){
   
 }
 
-# Q3: define and interpret a logistic model with all variables
 
+# Q3: define and interpret a logistic model with all variables
 ## define the model
 log_model <- glm(prog_421a ~ year_built + res_units + net_inc_sqft + assessed_value_perunit, 
                  data = data, family = "binomial")
