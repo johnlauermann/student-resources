@@ -29,6 +29,11 @@ boxplot(res_units ~ prog_421a,
         xlab = "421a Building",
         ylab = "Residential Units")
 
+boxplot(assessed_value ~ prog_421a, 
+        data = data,
+        xlab = "421a Building",
+        ylab = "Assessed Value ($)")
+
 boxplot(assessed_value_perunit ~ prog_421a, 
         data = data,
         xlab = "421a Building",
@@ -114,4 +119,5 @@ exp(confint.default(log_model))
 
 ## Interpret analysis of deviance table
 anova(log_model, "Chisquare")
+
 
