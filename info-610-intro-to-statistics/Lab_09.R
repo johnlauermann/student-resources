@@ -73,9 +73,9 @@ suburb <- data[data$PlaceType == "Suburb", ]
 ## see here for a summary of assumptions: https://www.statology.org/t-test-assumptions/
 
 ### are they normally distributed?
-hist(city$PovertyRate, breaks = 100, main = "New York Metro Poverty, 2022", 
+hist(city$PovertyRate, breaks = 100, main = "New York Metro Poverty, 2023", 
      ylab = "Census Tracts", xlab = "Poverty Rate")
-hist(suburb$PovertyRate, breaks = 100, main = "Poverty in the New York Metro, 2022", 
+hist(suburb$PovertyRate, breaks = 100, main = "Poverty in the New York Metro, 2023", 
      ylab = "Census Tracts", xlab = "Poverty Rate", add = TRUE, col = "red")
 mean(city$PovertyRate)
 median(city$PovertyRate)
