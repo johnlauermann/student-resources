@@ -97,18 +97,21 @@ var(suburb$Bachpct)
 
 
 ## run the t-tests to compare variable values in each group
-t.test(city$PovertyRate, suburb$PovertyRate, 
-       alternative = "two.sided",
-       mu = 0, 
+t.test(x = city$PovertyRate,       # group 1 sample mean
+       y = suburb$PovertyRate,     # group 2 sample mean
+       alternative = "two.sided",  # one or two sided test
+       mu = 0,                     # hypothesized difference between the means
        paired = FALSE, 
-       var.equal = FALSE,
-       conf.level = .95)
+       var.equal = FALSE,          # since variances are not equal (per above), use this option
+       conf.level = .95)           # desired level of confidence
+
 t.test(city$UnemploymentRate, suburb$UnemploymentRate, 
        alternative = "two.sided",
        mu = 0, 
        paired = FALSE, 
        var.equal = FALSE,
        conf.level = .95)
+
 t.test(city$Bachpct, suburb$Bachpct, 
        alternative = "two.sided",
        mu = 0, 
@@ -116,7 +119,7 @@ t.test(city$Bachpct, suburb$Bachpct,
        var.equal = FALSE,
        conf.level = .95)
 
-## or alternatively, you can use the [] query to work directly with the original dataframe
+## or alternatively, you can use the [] query from base R to work directly with the original dataframe
 t.test(data$PovertyRate[data$PlaceType == "City"], 
        data$PovertyRate[data$PlaceType == "Suburb"], 
        alternative = "two.sided",
@@ -150,7 +153,7 @@ summary(one.way.bach)
 
 
 #the ANOVA will tell you whether there is a difference across all of the groups,
-#without explaing where the differences occur. 
+#without explaining where the differences occur. 
 #for that, use a post-hoc test like Tukey's HSD
 #see more at https://rpubs.com/aaronsc32/post-hoc-analysis-tukey 
 
