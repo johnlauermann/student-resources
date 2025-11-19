@@ -40,11 +40,15 @@ data <- na.omit(data)
 # Question 1: what variables did you choose and why?
 ## visualizing data
 ## scatterplot pairs
-pairs(data)
+pairs(data, 
+      na.action = na.omit, 
+      upper.panel = NULL)
 
 # heat maps
 distance <- get_dist(na.omit(data))
-fviz_dist(distance, gradient = list(low = "blue", mid = "white", high = "red"))
+fviz_dist(distance, 
+          gradient = list(low = "blue", mid = "white", high = "red"),
+          show_labels = FALSE)
 
 
 
@@ -80,7 +84,7 @@ for(k in kvalues){
 }
 
 
-# Question 3: elbow plots to assess optimal value of k
+# Question 3: various kinds of elbow plots to assess optimal value of k
 fviz_nbclust(data, kmeans, method = "wss")
 fviz_nbclust(data, kmeans, method = "silhouette")
 fviz_nbclust(data, kmeans, method = "gap_stat")
