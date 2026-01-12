@@ -44,7 +44,7 @@ cbsa_boundary <- core_based_statistical_areas(cb = TRUE, year = 2023) %>%
   filter(CBSAFP == "35620")
 
 ### clip only those tracts that spatially intersect with CBSA boundaries
-data <- st_intersection(x = cbsa_boundary, y = data)
+data <- st_intersection(x = data, y = cbsa_boundary)
 
 ### map it just to be sure
 ggplot(data) +
