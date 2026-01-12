@@ -15,7 +15,7 @@ library(lsr)          # for Cohen's D
 # Using the Census API ----------------------------------------------------
 
 ##sign up for a Census API key at https://api.census.gov/data/key_signup.html
-census_api_key("fd874e212346a3d3f3e27fce3fb3cc7dfce3c4e1")
+census_api_key("your key here")
 
 ## find a list of variables here
 ## it includes code, description, sampling population, and finest geographic scale of availability
