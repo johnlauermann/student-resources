@@ -127,11 +127,11 @@ KMO(na.omit(data_clean))
 
 
 
-# Q2 & 3: Interpret pca -------------------------------------------------------
+# Q2: Interpret pca -------------------------------------------------------
 
-## run PCA
+## run an initial PCA
 pca <- principal(r = na.omit(data_clean), 
-          nfactors = 7, 
+          nfactors = ncol(data_clean), 
           residuals = TRUE, 
           rotate = "none",
           n.obs = nrow(data_clean),
@@ -145,6 +145,33 @@ pca <- principal(r = na.omit(data_clean),
 print(pca)
 names(pca)
 
+# Q3: Explore other options -------------------------------------------------------
 ## scree plot
 correlations <- cor(na.omit(data_clean), use = "pairwise.complete.obs")
 scree(correlations)
+
+## PCA with fewer factors
+principal(r = na.omit(data_clean), 
+          nfactors = 4, ## change this
+          residuals = TRUE, 
+          rotate = "none",
+          n.obs = nrow(data_clean),
+          covar = TRUE, 
+          scores = TRUE, 
+          missing = TRUE, 
+          impute = "mean",
+          use = "pairwise",
+          method = "cor")
+
+## explore other rotations
+principal(r = na.omit(data_clean), 
+          nfactors = 4, ## change this
+          residuals = TRUE, 
+          rotate = "varimax",  ## change this for rotation options
+          n.obs = nrow(data_clean),
+          covar = TRUE, 
+          scores = TRUE, 
+          missing = TRUE, 
+          impute = "mean",
+          use = "pairwise",
+          method = "cor")
