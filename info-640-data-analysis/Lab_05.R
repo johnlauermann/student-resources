@@ -47,12 +47,14 @@ data <- read_ipums_micro(ddi)
 
 ## variables for modeling interest
 variables <- c("INCTOT", "POVERTY", "EMPSTAT", "TRANWORK", "TRANTIME", 
-               "SEX", "AGE", "CITIZEN", "METPOP20", "DENSITY")
+               "SEX", "AGE", "CITIZEN", "METPOP20", "DENSITY", "ANCESTR1")
 
 ## simply to a matrix
 matrix <- data %>%
   select(variables) %>%
-  filter(INCTOT > 0)
+  filter(INCTOT > 0 & 
+         ANCESTR1 == "032"  # German ancestry
+         )
 
 pairs(matrix, main = "Potential Predictors of Income", upper.panel = NULL)
 
