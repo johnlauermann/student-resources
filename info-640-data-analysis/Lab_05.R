@@ -26,7 +26,7 @@ extract <- define_extract_micro(
   description = "ACS PUMS Data, 2024",
   samples = c("us2024a"),
   variables = c("STATEFIP", "COUNTYFIP", "PUMA", "METPOP20","DENSITY",
-                "SEX", "AGE", "MARST", "RACE", "CITIZEN", 
+                "SEX", "AGE", "MARST", "RACE", "CITIZEN", "ANCESTR1",
                 "INCTOT", "POVERTY", "EMPSTAT", "TRANWORK", "TRANTIME", "EDUC"), 
   data_quality_flags = TRUE)
 
@@ -38,26 +38,35 @@ filepath <- download_extract(extract)
 ## read data
 ddi <- read_ipums_ddi(filepath)
 data <- read_ipums_micro(ddi)
-
-
+ls(data)
+table(data$ANCESTR1)
 
 # Q1: Define your model ---------------------------------------------------
 
 ## This is mostly conceptual. But check for correlations and eventually test assumptions. 
 
 ## variables for modeling interest
-variables <- c("INCTOT", "POVERTY", "EMPSTAT", "TRANWORK", "TRANTIME", 
-               "SEX", "AGE", "CITIZEN", "METPOP20", "DENSITY", "ANCESTR1")
+variables_model <- c("INCTOT", "POVERTY", "EMPSTAT", "TRANWORK", "TRANTIME", 
+               "SEX", "AGE", "CITIZEN", "METPOP20", "DENSITY")
 
-## simply to a matrix
+## simplify to a matrix
 matrix <- data %>%
-  select(variables) %>%
+  select(all_of(variables_model)) %>%
   filter(INCTOT > 0 & 
-         ANCESTR1 == "032"  # German ancestry
-         )
+         ANCESTR1 == 32  # German ancestry, just to cut down the data somehow...
+  ) %>%
+  mutate(across(
+    all_of(variables),
+    ~ na_if(.x, 9999999)
+  ))
 
-pairs(matrix, main = "Potential Predictors of Income", upper.panel = NULL)
-
+data <- data_raw %>%
+  select(all_of(variables)) %>%
+  mutate(across(
+    all_of(variables),
+    ~ifelse(as.character(.x) %in% NA_codes, NA, .x)
+  ))
+ls(matrix)
 
 
 # Q2: Interpret regression results ----------------------------------------
@@ -97,3 +106,7 @@ plot(both)
 ## or this function will run the possible indicators, in addition to R2
 ols_step_all_possible(model)
 
+
+
+# Save your data. We'll use it later in the semester for the Bayesian lab. 
+write.csv(x = matrix, file = "lab_05_data.csv")
