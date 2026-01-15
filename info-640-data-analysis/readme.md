@@ -5,7 +5,7 @@ This course covers core statistical techniques used by data science/information 
 
 ## Outline
 The lab materials cover the following topics:
-- [Lab 1: exploratory data analysis with inferential tests](info-640-data-analysis/Lab_01.R)
+- [Lab 1: exploratory data analysis with inferential tests](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_01.R)
 
 ## How to use this material
 Each of the scripts in this library corresponds to a lab assignment in the course. To follow the labs, you will need to install R and RStudio (see [instructions here](https://posit.co/download/rstudio-desktop/)). Then download the script from this repository and open it in RStudio on your local computer. 
