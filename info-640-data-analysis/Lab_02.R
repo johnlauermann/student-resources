@@ -6,6 +6,7 @@ library(tidyverse)    # dependency for tidycensus
 library(tidycensus)   # for Census API
 library(tigris)       # for metro region boundaries
 library(ggplot2)      # for data visualization
+library(GGally)       # for data visualization
 library(sf)           # spatial analysis, for querying data
 library(psych)        # for pca
 
@@ -18,7 +19,7 @@ census_api_key("your key here")
 
 ## find a list of variables here
 ## it includes code, description, sampling population, and finest geographic scale of availability
-variablelist <- load_variables(2023, "acs5", cache = TRUE)
+variablelist <- load_variables(year = 2024, dataset = "acs5", cache = TRUE)
 
 ## define my variables of interest
 variables <- c(
@@ -59,17 +60,17 @@ variables <- c(
   )
 
 ## get the data
-data <- get_acs(geography = "tract",
-                state = c("NY", "NJ", "CT", "PA"),
-                variables = variables,
-                output = "wide", 
-                survey = "acs5",
-                year = 2023, 
-                geometry = TRUE)
+data <- get_acs(geography = "tract", ## unit of data aggregation
+                state = c("NY", "NJ", "CT", "PA"), ## state(s) to download
+                variables = variables,  ## a vector with variable codes
+                output = "wide",  ## each row is a tract, each column a variable
+                survey = "acs5",  ## acs 5 year estimates
+                year = 2024,      ## most recent year available
+                geometry = TRUE)  ## include spatial boundaries
 
 ## now use a bit of GIS to filter only tracts in the New York CBSA
 ### get the boundaries
-cbsa_boundary <- core_based_statistical_areas(cb = TRUE, year = 2023) %>%
+cbsa_boundary <- core_based_statistical_areas(cb = TRUE, year = 2024) %>%
   filter(CBSAFP == "35620")
 
 ### clip only those tracts that spatially intersect with CBSA boundaries
@@ -77,10 +78,10 @@ data <- st_intersection(data, cbsa_boundary)
 
 ### map it just to be sure
 ggplot(data) +
-  geom_sf(fill = "gray", color = "black", size = .05) + 
+  geom_sf(fill = "gray", color = "black", size = .03) + 
   coord_sf(crs = 26918) +
   theme_minimal() +
-  labs(title = "Census tracts in the CBSA region")
+  labs(title = "Census tracts in the New York CBSA region")
 
 ## finally, clean up the data
 data_clean <- data %>%
@@ -122,40 +123,54 @@ data_clean <- data %>%
 
 # Q1: Evaluate structure of matrix --------------------------------------------
 
-cortest.bartlett(na.omit(data_clean))
-KMO(na.omit(data_clean))
+## clean up a matrix, and drop nulls
+matrix <- na.omit(data_clean)
+
+## visualize the data 
+ggpairs(data = matrix)  ## warning: this only works with fewer variables
+
+## Bartlett test of sphericity
+cortest.bartlett(matrix)
+
+## Kaiser-Meyer-Olkin criterion
+KMO(matrix)
 
 
 
 # Q2: Interpret pca -------------------------------------------------------
 
 ## run an initial PCA
-pca <- principal(r = na.omit(data_clean), 
-          nfactors = ncol(data_clean), 
-          residuals = TRUE, 
-          rotate = "none",
-          n.obs = nrow(data_clean),
-          covar = TRUE, 
-          scores = TRUE, 
-          missing = TRUE, 
-          impute = "mean",
-          use = "pairwise",
-          method = "cor")
+pca <- principal(r = matrix,              # name the matrix
+                 nfactors = ncol(matrix), # how many components to look for?
+                 residuals = TRUE,        # show the residuals
+                 rotate = "none",         # do you want to apply a rotation?
+                 n.obs = nrow(matrix),    # n should equal total rows
+                 covar = TRUE,            
+                 scores = TRUE, 
+                 missing = TRUE, 
+                 impute = "mean",
+                 use = "pairwise",
+                 method = "cor")
 
+## see full report
 print(pca)
+
+## see available values
 names(pca)
+
+
 
 # Q3: Explore other options -------------------------------------------------------
 ## scree plot
-correlations <- cor(na.omit(data_clean), use = "pairwise.complete.obs")
+correlations <- cor(matrix, use = "pairwise.complete.obs")
 scree(correlations)
 
 ## PCA with fewer factors
-principal(r = na.omit(data_clean), 
+principal(r = matrix, 
           nfactors = 4, ## change this
           residuals = TRUE, 
           rotate = "none",
-          n.obs = nrow(data_clean),
+          n.obs = nrow(matrix),
           covar = TRUE, 
           scores = TRUE, 
           missing = TRUE, 
@@ -164,11 +179,11 @@ principal(r = na.omit(data_clean),
           method = "cor")
 
 ## explore other rotations
-principal(r = na.omit(data_clean), 
+principal(r = matrix, 
           nfactors = 4, 
           residuals = TRUE, 
           rotate = "varimax",  ## change this for rotation options
-          n.obs = nrow(data_clean),
+          n.obs = nrow(matrix),
           covar = TRUE, 
           scores = TRUE, 
           missing = TRUE, 
