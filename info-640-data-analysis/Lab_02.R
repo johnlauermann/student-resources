@@ -165,7 +165,7 @@ principal(r = na.omit(data_clean),
 
 ## explore other rotations
 principal(r = na.omit(data_clean), 
-          nfactors = 4, ## change this
+          nfactors = 4, 
           residuals = TRUE, 
           rotate = "varimax",  ## change this for rotation options
           n.obs = nrow(data_clean),
