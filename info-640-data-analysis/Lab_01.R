@@ -26,7 +26,7 @@ variables <- c(
   ConRent_agg                = "B25060_001E",   
   HouseUnits_sum             = "B25001_001E",
   HURenter_sum               = "B25003_003E",
-  HUVacant_sum               = "B25002_003E",
+  HUVacant_sum               = "B25002_003E"
   )
 
 ## get the data
