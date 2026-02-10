@@ -6,7 +6,6 @@ library(tidyverse)    # dependency for tidycensus
 library(tidycensus)   # for Census API
 library(tigris)       # for metro region boundaries
 library(ggplot2)      # for data visualization
-library(GGally)       # for data visualization
 library(sf)           # spatial analysis, for querying data
 library(psych)        # for pca
 
@@ -125,9 +124,6 @@ data_clean <- data %>%
 
 ## clean up a matrix, and drop nulls
 matrix <- na.omit(data_clean)
-
-## visualize the data 
-ggpairs(data = matrix)  ## warning: this only works with fewer variables
 
 ## Bartlett test of sphericity
 cortest.bartlett(matrix)
