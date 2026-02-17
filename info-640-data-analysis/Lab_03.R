@@ -72,7 +72,7 @@ ggplot(data) +
   geom_sf(fill = "gray", color = "black", size = .05) + 
   coord_sf(crs = 26918) +
   theme_minimal() +
-  labs(title = "Census tracts in the sample")
+  labs(title = "Census tracts in the original sample")
 
 ### get the CBSA boundaries
 cbsa_boundary <- core_based_statistical_areas(cb = TRUE, year = 2023) %>%
