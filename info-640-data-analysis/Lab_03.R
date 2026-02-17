@@ -19,7 +19,7 @@ census_api_key("your key here")
 ## it includes code, description, sampling population, and finest geographic scale of availability
 variablelist <- load_variables(2023, "acs5", cache = TRUE)
 
-## define my variables of interest
+## define my variables of interest (same that I used for Lab 2)
 variables <- c(
   Adults_sum = "B15003_001E",
   ConRent_agg = "B25060_001E",
@@ -57,7 +57,7 @@ variables <- c(
   White_sum = "B02001_002E"
 )
 
-## get the data
+## query the Census API
 data <- get_acs(geography = "tract",
                 state = c("NY", "NJ", "CT", "PA"),
                 variables = variables,
@@ -67,7 +67,14 @@ data <- get_acs(geography = "tract",
                 geometry = TRUE)
 
 ## now use a bit of GIS to filter only tracts in the New York CBSA
-### get the boundaries
+### map the raw data to verify
+ggplot(data) +
+  geom_sf(fill = "gray", color = "black", size = .05) + 
+  coord_sf(crs = 26918) +
+  theme_minimal() +
+  labs(title = "Census tracts in the sample")
+
+### get the CBSA boundaries
 cbsa_boundary <- core_based_statistical_areas(cb = TRUE, year = 2023) %>%
   filter(CBSAFP == "35620")
 
@@ -176,10 +183,12 @@ names(k4)
 ## see entire report
 k4
 
-## or call individual components
+## see the invidual component options
+names(k4)
+
+## call individual components
 k4$size
 k4$centers
-
 k4$betweenss
 k4$withinss
 k4$totss
