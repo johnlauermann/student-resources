@@ -148,6 +148,7 @@ for(k in kvalues){
                      data = na.omit(data_clean),
                      centers = k, 
                      nstart = 25,
+                     geom = "point",
                      main = paste0("Cluster plot for k=", k)
                      )
   )
