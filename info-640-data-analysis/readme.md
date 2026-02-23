@@ -8,9 +8,9 @@ This course covers core statistical techniques used by data science/information 
 The lab materials cover the following topics:
 
 _*Exploring data*_
-- [Lab 1: EDA with inferential tests](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_01.R)
+- [Lab 1: correlation and t-tests](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_01.R)
 - [Lab 2: principal component analysis](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_02.R)
-- [Lab 3: hierarchical and k-means cluster analysis](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_03.R)
+- [Lab 3: cluster analysis](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_03.R)
 
 _*Modeling*_
 - [Lab 4: fixed effects ANOVA](https://github.com/johnlauermann/student-resources/blob/main/info-640-data-analysis/Lab_04.R)
