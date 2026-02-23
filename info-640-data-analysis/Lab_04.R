@@ -1,7 +1,7 @@
 
 # Lab 4: ANOVA ------------------------------------------------------------
 
-library(socratadata)  # for Socrata API
+library(socratadata)  # for Socrata API (see more: https://ryanzomorrodi.github.io/socratadata/)
 library(dplyr)        # for data management
 library(stringr)      # for string data management
 library(ggplot2)      # for data visualization
@@ -10,17 +10,22 @@ library(effectsize)   # for eta squared
 
 # Query from NYC Open Data ------------------------------------------------
 
+## First: Create an account on NYC Open Data. Log in. Click your name (top right).
+## Choose Developer Settings. Create a new API Key. 
+
 ## define your API key
 soc_api_key_id = "your key here"
 
-## review list of data
+## review a list of data available
 dataset_list <- soc_discover(domains = "data.cityofnewyork.us")
 
-## or query the list
+## or query the list of data
 dataset_query <- soc_discover(domains = "data.cityofnewyork.us", 
                               query = "zoning")
 
 ## read the data, including a query
+## For structuring queries, try using the NYC Open Data query interface. 
+## And here's the full documentation: https://dev.socrata.com/docs/queries/ 
 data <- soc_read(
   "https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks/about_data",
   query = soc_query(where = "borough LIKE 'BK'")
@@ -72,6 +77,7 @@ ggplot(data = residential, aes(x = zonedist1, y = assessland_perunit)) +
     subtitle = "Price per unit, 2025", 
     y = "$",
     x  = "Zoning Type") + 
+  scale_y_continuous(labels = scales::label_currency()) +
   theme_minimal()
 
 ## now test assumptions
