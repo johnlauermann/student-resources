@@ -84,6 +84,9 @@ plot(fitted(model), resid(model))
 plot(hatvalues(model))
 plot(cooks.distance(model))
 
+# and check variance inflation factor
+cars::vif(model)
+
 
 
 # Q3: stepwise modeling ---------------------------------------------------
