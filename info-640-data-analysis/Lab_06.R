@@ -20,15 +20,17 @@ library(ggplot2)    # for data visualization
 ## load data
 data_raw <- read_spss("2023-24 RLS Public Use File Feb 19.sav")
 
-## clean up
+## define variables of interest
 variables <- c(
   "HAPPY", "SATIS_A", "SATIS_B", "RELPER", "SPIRPER",
   "ATTNDPERRLS", "RELIMP", "PRAY", "SECMEMB", "MARITAL", "CHILDREN",
   "BIRTHDECADE", "GENDER", "RACECMB", "HISP", "EDUCREC", "EMPLSIT",
   "INC_SDT1", "INTFREQ", "YEARLOCREC", "REG", "WEIGHT")
 
+## common codes used to designate null values
 NA_codes <- c("99", "999", "9999", "900000")
 
+## filter data 
 data <- data_raw %>%
   select(all_of(variables)) %>%
   mutate(across(
@@ -36,8 +38,25 @@ data <- data_raw %>%
     ~ifelse(as.character(.x) %in% NA_codes, NA, .x)
   ))
 
+## and clean up to include variable labels
+### define labels
+variable_labels <- sapply(X = data_raw, 
+                          FUN = function(x) attr(x, "label"))
+
+### function to label data frames
+apply_labels <- function(data, labels) {
+  for (column in intersect(names(data), names(labels))) {
+    attr(data[[column]], "label") <- labels[[column]]
+  }
+  data
+}
+
+### apply the labeling function
+data <- apply_labels(data, variable_labels)
+
 
 ## test just to see
+ls(data)
 get_totals(var = "HAPPY", df = data, wt = "WEIGHT")
 
 
@@ -46,7 +65,7 @@ get_totals(var = "HAPPY", df = data, wt = "WEIGHT")
 
 # This is mostly conceptual, but check assumptions and distribution of data.
 # In my case, I'll test potential predictors of HAPPY using logistic regression. 
-# And potential predictors of internet usage frequency with poisson regression. 
+# And potential predictors of internet usage frequency with Poisson regression. 
 
 
 
@@ -66,7 +85,7 @@ predictors
 log_formula <- as.formula(paste("as.factor(HAPPY_binary) ~", paste(predictors, collapse = " + ")))
 log_formula 
 
-## fit the basic model
+## fit a basic model with raw data
 log_model <- glm(formula = log_formula, data = data, family = "binomial")
 summary(log_model)
 
@@ -87,7 +106,7 @@ exp(confint.default(log_model_weighted))
 
 ## Interpret analysis of deviance table
 anova(log_model, "Chisquare")
-anova(log_model_weighted, "Chisquare")
+
 
 
 
@@ -114,10 +133,10 @@ predictors
 
 ## define formula
 poisson_formula <- as.formula(paste("INTFREQ_count ~", paste(predictors, collapse = " + ")))
-poisson_formula 
+poisson_formula
 
-## fit a basic model
-poisson_model <- glm(formula = formula, data = data, family = "poisson")
+## fit a basic model with raw data
+poisson_model <- glm(formula = poisson_formula, data = data, family = "poisson")
 summary(poisson_model)
 
 ## and compare with weighted survey data
