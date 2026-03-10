@@ -23,7 +23,7 @@ sample_list <- get_sample_info("usa")
 ## define an extract
 extract <- define_extract_micro(
   collection = "usa",                    # defines general data collection
-  description = "ACS PUMS Data, 2024",   # defines specific data source
+  description = "ACS PUMS Data, 2024",   # name the extract
   samples = c("us2024a"),                # defines records based on a specific survey form 
   variables = c("STATEFIP", "COUNTYFIP", "PUMA", "METPOP20","DENSITY",  # you can find these on IPUMS website
                 "SEX", "AGE", "MARST", "RACE", "CITIZEN", "ANCESTR1",
