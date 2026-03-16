@@ -22,28 +22,29 @@ sample_list <- get_sample_info("usa")
 
 ## define an extract
 extract <- define_extract_micro(
-  collection = "usa",
-  description = "ACS PUMS Data, 2024",
-  samples = c("us2024a"),
-  variables = c("STATEFIP", "COUNTYFIP", "PUMA", "METPOP20","DENSITY",
+  collection = "usa",                    # defines general data collection
+  description = "ACS PUMS Data, 2024",   # name the extract
+  samples = c("us2024a"),                # defines records based on a specific survey form 
+  variables = c("STATEFIP", "COUNTYFIP", "PUMA", "METPOP20","DENSITY",  # you can find these on IPUMS website
                 "SEX", "AGE", "MARST", "RACE", "CITIZEN", "ANCESTR1",
                 "INCTOT", "POVERTY", "EMPSTAT", "TRANWORK", "TRANTIME", "EDUC"), 
-  data_quality_flags = TRUE)
+  data_quality_flags = TRUE              # will add indicator of potential data problems (e.g. missing values)
+)
 
 ## submit the API and download results
-extract <- submit_extract(extract)
-wait_for_extract(cps_extract)
-filepath <- download_extract(extract)
+extract <- submit_extract(extract)    # submits the request to ipums.org
+wait_for_extract(cps_extract)         # not strictly necessary. Just cycles until download is ready.
+filepath <- download_extract(extract) # downloads to your working directory
 
 ## read data
-ddi <- read_ipums_ddi(filepath)
-data <- read_ipums_micro(ddi)
+ddi <- read_ipums_ddi(filepath)       # unzips and reads the code book (ddi file)
+data <- read_ipums_micro(ddi)         # unzips and reads the data based on ddi, ads variable labels, etc. 
 ls(data)
 table(data$ANCESTR1)
 
 # Q1: Define your model ---------------------------------------------------
 
-## This is mostly conceptual. But check for correlations and eventually test assumptions. 
+## This part of lab is mostly conceptual. But check for correlations and eventually test assumptions. 
 
 ## variables for modeling interest
 variables_model <- c("INCTOT", "POVERTY", "EMPSTAT", "TRANWORK", "TRANTIME", 
