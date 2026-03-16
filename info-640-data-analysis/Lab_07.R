@@ -22,7 +22,7 @@ ggplot(data = data, aes(x = INCTOT)) +
   labs(title = "Total Personal Income",
        subtitle = "PUMS 2024 Data",
        x = "$",
-       y = "Individuals")
+       y = "Individuals") + 
   theme_minimal() 
 
 
@@ -30,6 +30,9 @@ ggplot(data = data, aes(x = INCTOT)) +
 
 # Q1: correlation with Bayes factors --------------------------------------
 
+## scale the predictors, data to simplify
+data <- data %>%
+  mutate(across(c(AGE, DENSITY), scale))
 
 ## standard Pearson's R
 cor.test(x = data$INCTOT, y = data$AGE)
@@ -53,11 +56,11 @@ summary(ols_model)
 
 
 ## define bayseian model
-bayes_model <- stan_glm(INCTOT ~ AGE + SEX + CITIZEN + DENSITY, 
-                        data = data, 
-                        chains = 2, 
-                        iter = 2000,
-                        seed = 123)
+bayes_model <- stan_glm(INCTOT ~ AGE + SEX + CITIZEN + DENSITY, # formula
+                        data = data,  # data frame
+                        chains = 3,   # how many Markov chains? more = better diagnostics
+                        iter = 2000,  # how many samples per chain?
+                        seed = 123)   # sets the random seed for reproducibility
 bayes_model
 summary(bayes_model)
 
