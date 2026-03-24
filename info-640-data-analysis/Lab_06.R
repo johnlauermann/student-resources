@@ -64,14 +64,14 @@ get_totals(var = "HAPPY", df = data, wt = "WEIGHT")
 # Q1: define and justify model --------------------------------------------
 
 # This is mostly conceptual, but check assumptions and distribution of data.
-# In my case, I'll test potential predictors of HAPPY using logistic regression. 
-# And potential predictors of internet usage frequency with Poisson regression. 
+# In my case, I'll test potential predictors of happiness (HAPPY) using logistic regression. 
+# And potential predictors of internet usage frequency (INTFREQ) with Poisson regression. 
 
 
 
 # Q2: Logistic regression ----------------------------------------
 
-## create binary variable
+## create a binary variable
 data$HAPPY_binary <- ifelse(data$HAPPY == 1 | data$HAPPY == 2, 1, 0)
 data <- data %>%
   mutate(HAPPY_binary = haven ::as_factor(HAPPY_binary))
@@ -82,30 +82,30 @@ predictors <- setdiff(variables, c("HAPPY", "WEIGHT"))
 predictors
 
 ## define a formula
-log_formula <- as.formula(paste("as.factor(HAPPY_binary) ~", paste(predictors, collapse = " + ")))
-log_formula 
+logistic_formula <- as.formula(paste("as.factor(HAPPY_binary) ~", paste(predictors, collapse = " + ")))
+logistic_formula 
 
 ## fit a basic model with raw data
-log_model <- glm(formula = log_formula, data = data, family = "binomial")
-summary(log_model)
+logistic_model <- glm(formula = logistic_formula, data = data, family = "binomial")
+summary(logistic_model)
 
 ## and compare with weighted survey data
 design <- svydesign(ids = ~1, weights = ~WEIGHT, data = data)
-log_model_weighted <- svyglm(
-  formula = log_formula,
+logistic_model_weighted <- svyglm(
+  formula = logistic_formula,
   design = design,
   family = quasibinomial())
-summary(log_model_weighted)
+summary(logistic_model_weighted)
 
 ## convert coefficients and confidence intervals to odds-ratio terms
-exp(coefficients(log_model))
-exp(confint.default(log_model))
-exp(coefficients(log_model_weighted))
-exp(confint.default(log_model_weighted))
+exp(coefficients(logistic_model))
+exp(confint.default(logistic_model))
+exp(coefficients(logistic_model_weighted))
+exp(confint.default(logistic_model_weighted))
 
 
 ## Interpret analysis of deviance table
-anova(log_model, "Chisquare")
+anova(logistic_model, "Chisquare")
 
 
 
