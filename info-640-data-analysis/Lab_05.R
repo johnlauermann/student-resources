@@ -38,7 +38,7 @@ filepath <- download_extract(extract) # downloads to your working directory
 
 ## read data
 ddi <- read_ipums_ddi(filepath)       # unzips and reads the code book (ddi file)
-data <- read_ipums_micro(ddi)         # unzips and reads the data based on ddi, ads variable labels, etc. 
+data <- read_ipums_micro(ddi)         # unzips and reads the data based on ddi, adds variable labels, etc. 
 ls(data)
 table(data$ANCESTR1)
 
@@ -87,7 +87,6 @@ plot(cooks.distance(model))
 
 # and check variance inflation factor
 cars::vif(model)
-
 
 
 # Q3: stepwise modeling ---------------------------------------------------
