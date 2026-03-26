@@ -9,7 +9,7 @@ library(tigris)       # for metro region boundaries
 library(ggplot2)      # for data visualization
 library(sf)           # spatial analysis, for querying data
 library(spdep)        # spatial statistics
-library(spatialreg)
+library(spatialreg)   # spatial regression
 
 
 
