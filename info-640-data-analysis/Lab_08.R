@@ -8,7 +8,7 @@ library(tidyverse)    # dependency for tidycensus
 library(tigris)       # for metro region boundaries
 library(ggplot2)      # for data visualization
 library(sf)           # spatial analysis, for querying data
-library(spdep)        # spatial statistics
+library(spdep)        # autocorrelation tests
 library(spatialreg)   # spatial regression
 
 
@@ -111,7 +111,6 @@ data_clean <- data %>%
 # Q1: interpret choropleth maps -------------------------------------------
 
 # map a variable of interest using ggplot
-
 ggplot(data = data_clean) +  # defines the plot space
   geom_sf(aes(fill = ConRent_mean), color = NA) +  # viz type = map
   coord_sf(crs = 26918) +   # a relevant map projection for the region, see https://epsg.io/ 
@@ -127,14 +126,12 @@ ggplot(data = data_clean) +  # defines the plot space
   theme_minimal()  # choose a theme
 
 
-
 # or map at a different scale
 ## query NYC tracts, change projection, and erase shoreline overlaps
 nyc <- data_clean %>%
   filter(str_detect(NAME, "Bronx County|Kings County|New York County|Queens County|Richmond County")) %>%
   st_transform(26918) %>%
   erase_water(year = 2020)
-
 
 ggplot(data = nyc) +  
   geom_sf(aes(fill = ConRent_mean), color = NA) +  
