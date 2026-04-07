@@ -9,7 +9,7 @@ library(haven)      # for reading SPSS data
 library(pewmethods) # for pew data
 library(dplyr)      # for data management
 library(survey)     # for weighting survey data
-library(broom)      # for incident rate ratios
+library(broom)      # for modifying coefficients systematically
 library(ggplot2)    # for data visualization
 
 
