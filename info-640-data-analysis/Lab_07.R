@@ -27,7 +27,6 @@ ggplot(data = data, aes(x = INCTOT)) +
 
 
 
-
 # Q1: correlation with Bayes factors --------------------------------------
 
 ## scale the predictors, data to simplify
@@ -36,13 +35,12 @@ data <- data %>%
 
 ## standard Pearson's R
 cor.test(x = data$INCTOT, y = data$AGE)
-cor.test(x = data$INCTOT, y = data$SEX)
+cor.test(x = data$INCTOT, y = data$SEX, method = "spearman")
 cor.test(x = data$INCTOT, y = data$CITIZEN)
 cor.test(x = data$INCTOT, y = data$DENSITY)
 
 ## Bayes factor
 correlationBF(x = data$INCTOT, y = data$AGE)
-correlationBF(x = data$INCTOT, y = data$SEX)
 correlationBF(x = data$INCTOT, y = data$CITIZEN)
 correlationBF(x = data$INCTOT, y = data$DENSITY)
 
@@ -58,24 +56,33 @@ summary(ols_model)
 ## define bayseian model
 bayes_model <- stan_glm(INCTOT ~ AGE + SEX + CITIZEN + DENSITY, # formula
                         data = data,  # data frame
+                        family = gaussian(), # linear regression
                         chains = 3,   # how many Markov chains? more = better diagnostics
                         iter = 2000,  # how many samples per chain?
                         seed = 123)   # sets the random seed for reproducibility
-bayes_model
+
+## view the model
 summary(bayes_model)
 
-# plot coefficient estimates
-parameters <- names(coef(bayes_model))
-plot(bayes_model, 
-     plotfun = "areas",  
-     pars = parameters,  
-     include = TRUE, 
-     prob = 0.95,  border = "black") + 
-  theme_minimal(base_size = 15) + 
-  labs(title = "Posterior Distributions with 95% Credible Interval",
-       x = "Parameter Value",
-       y = "Density")
+## view the priors
+prior_summary(bayes_model)
 
+## plot coefficient estimates
+parameters <- names(coef(bayes_model))
+
+for (coefficient in parameters){
+  plot <- plot(bayes_model,
+       plotfun = "areas",
+       pars = coefficient,
+       include = TRUE, 
+       prob = .95, 
+       border = "black") +
+    theme_minimal() +
+    labs(title = paste("Posterior Distribustion of", coefficient, "with 95% Credible Interval"),
+         x = "Parameter Value",
+         y = "Density")
+  print(plot)
+}
 
 
 # Q3: baysian model selection ---------------------------------------------
