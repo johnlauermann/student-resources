@@ -10,7 +10,7 @@ library(dplyr)    # for data management
 
 # Google trends data
 ## I'll use https://trends.google.com/trends/explore?q=pratt%20institute&date=all&geo=US&legacy&hl=en
-data <- read.csv("pratt_institute_trends.csv")
+data <- read.csv("https://raw.githubusercontent.com/johnlauermann/student-resources/refs/heads/main/info-640-data-analysis/replication_data/pratt_institute_trends.csv")
 
 
 
