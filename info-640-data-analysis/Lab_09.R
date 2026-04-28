@@ -28,7 +28,6 @@ autoplot(ts) +
 ## decompose the series
 decomposed <- decompose(ts)
 autoplot(decomposed) +
-  ylim(0, 100) + 
   ggtitle('Google searches for "Pratt Institute" since 2004') 
 
 
