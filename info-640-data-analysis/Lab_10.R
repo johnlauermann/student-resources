@@ -1,18 +1,18 @@
 
 # Lab 10: text analysis ---------------------------------------------------
 
-library(gutenbergr)
-library(dplyr)
-library(stringr)
-library(tidytext)
-library(textdata)
-library(tidyr)
-library(ggplot2)
-library(wordcloud)
-library(igraph)
-library(ggraph)
-library(widyr)
-library(scales)
+library(gutenbergr) # a collection of public domain works
+library(dplyr)      # for data management
+library(stringr)    # for string data
+library(tidytext)   # text analysis and managment
+library(textdata)   # text management
+library(tidyr)      # tibble management
+library(ggplot2)    # data visualizations
+library(wordcloud2) # word clouds
+library(igraph)     # network visualizations
+library(ggraph)     # ggplot extention for networks
+library(widyr)      # tibble manipulation
+library(scales)     # rescale data for visualization
 
 
 # Get data ----------------------------------------------------------------
@@ -37,6 +37,7 @@ text <- gutenberg_download(gutenberg_id = author_ids)
 
 ## load stop words
 data("stop_words")
+glimpse(stop_words)
 
 ## tokenize by word
 tokens <- text %>%
@@ -72,6 +73,18 @@ ggplot(data = top_ten,
   ylab("Counts") +
   xlab("Words") +
   theme_minimal()
+
+## or create a word cloud
+book_words %>%
+  select(word, freq = n) %>%
+  anti_join(stop_words, by = "word") %>%
+  filter(freq > 75) %>%
+  wordcloud2(size = .5, 
+             minSize = .005,
+             fontFamily = 'Helvetica', 
+             color = 'random-light', 
+             backgroundColor = "black", 
+             shape = "star")
 
 
 
@@ -155,14 +168,14 @@ bigram_graph <- bigram_counts %>%
   graph_from_data_frame()
 
 ## network visualization
-set.seed(2017)
+set.seed(123)
 ggraph(graph = bigram_graph, layout = "fr") +
   geom_edge_link() + 
   geom_node_point() +
   geom_node_text(aes(label = name), vjust = 1, hjust = 1)
 
 ## add some fancy stuff to make a Markov chain...
-set.seed(2020)
+set.seed(123)
 
 a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
 
