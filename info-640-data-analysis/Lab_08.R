@@ -205,3 +205,38 @@ spatial_model <- lagsarlm(formula = formula,
 names(spatial_model)
 summary(spatial_model)
 
+
+
+# Bonus material: map the model -------------------------------------------
+
+## save the results
+lag_results <- rent_data %>%
+  mutate(
+    fitted = fitted(spatial_model),
+    residual = residual(spatial_model))
+
+## map the results
+### predicted values
+ggplot(data = lag_results) +  
+  geom_sf(aes(fill = fitted), color = NA) +  
+  scale_fill_distiller(palette = "Blues", 
+                       direction = 1,  
+                       name = "Predicted",  
+                       na.value = "gray90") + 
+  labs(title = "Fitted Values", 
+       caption = "Spatial lag model") + 
+  theme_minimal()
+
+ggplot(data = lag_results) +  
+  geom_sf(aes(fill = reisdual), color = NA) +  
+  scale_fill_gradient2(low = "blue", 
+                       high = "red",
+                       mid = "white", 
+                       midpoint = 0, 
+                       name = "Residual")
+  labs(title = "Fitted Values", 
+       caption = "Spatial lag model") + 
+  theme_minimal()
+
+
+
